@@ -2,15 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {Box, Button} from '@mui/material';
 import {getComments} from '../api/actions/comment.api';
 import Comment from './Comment';
-import {CommentT} from '../common/types/types';
-import userApi from "../api/actions/user.api";
-import {useAppSelector} from "../hooks/use-app-selector/use-app-selector.hook";
+import {CommentT, RootState} from '../common/types/types';
 import CreateCommentModal from "./CreateCommentModal";
+import {useSelector} from "react-redux";
 
 const CommentList: React.FC<{ exhibitId: number }> = ({exhibitId}) => {
     const [comments, setComments] = useState<CommentT[]>([]);
-    const token = useAppSelector(state => state.userData.token);
-    const [id, setId] = useState<number>(-1);
+    const id = useSelector((state:RootState) => state.userData.id);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const closeModal = () => {
@@ -30,23 +28,11 @@ const CommentList: React.FC<{ exhibitId: number }> = ({exhibitId}) => {
         fetchComments();
     }, [exhibitId]);
 
-    useEffect(() => {
-        if (token) {
-            userApi.getUserByToken().then((res) => {
-                setId(res.data.id);
-            }).then(() => {
-                fetchComments()
-            });
-        } else {
-            setId(-1);
-        }
-    }, [token]);
-
     return (
         <>
             <Box>
                 {comments.map((comment) => (
-                    <Comment key={comment.user.id} comment={comment} refreshListFunction={fetchComments} exhibitId={id}
+                    <Comment key={comment.user.id} comment={comment} refreshListFunction={fetchComments} exhibitId={id??-1}
                              isOwner={comment.user.id === id}/>
                 ))}
             </Box>

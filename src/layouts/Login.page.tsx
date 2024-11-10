@@ -2,14 +2,15 @@ import React, {useEffect} from 'react';
 import { TextField, Button, Typography, Box, Link } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useAppDispatch, useAppSelector } from "../hooks/hooks";
 import { userActions } from "../store/actions";
 import { useNavigate } from 'react-router-dom';
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from '../common/types/types';
 
 const LoginPage = () => {
     const nav = useNavigate();
-    const dispatch = useAppDispatch();
-    const { error, token } = useAppSelector(state => ({
+    const dispatch = useDispatch<AppDispatch>();
+    const { error, token } = useSelector((state:RootState) => ({
         error: state.userData.error,
         token: state.userData.token
     }));

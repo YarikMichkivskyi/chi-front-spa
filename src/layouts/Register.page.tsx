@@ -2,13 +2,14 @@ import React from 'react';
 import { TextField, Button, Typography, Box, Link } from '@mui/material';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useAppDispatch } from "../hooks/hooks";
 import { userActions } from "../store/actions";
 import { toast } from 'react-toastify';
 import {useNavigate} from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {AppDispatch} from "../common/types/app/app-dispatch.type";
 
 const RegisterPage = () => {
-    const dispatch = useAppDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const nav = useNavigate();
 
     const formik = useFormik({

@@ -4,25 +4,29 @@ import {MyExhibit} from "../common/types/exhibit/myExhibit.type";
 import {deleteExhibit} from "../api/actions/exhibit.api";
 import CreateCommentModal from "./CreateCommentModal";
 import CommentList from "./CommentList";
+import {toast} from "react-toastify";
+import {useRequest} from "ahooks";
 
 type PostProps = {
     exhibit: MyExhibit;
     isOwner: boolean;
-    refreshListFunction: () => {}
+    refreshListFunction: () => void;
 };
 
 const Post: React.FC<PostProps> = ({exhibit, isOwner, refreshListFunction}) => {
     const [showComments, setShowComments] = useState(false);
 
 
-    const handleDelete = async () => {
-        try {
-            await deleteExhibit(exhibit.id.toString());
+    const { run: handleDelete } = useRequest(() => deleteExhibit(exhibit.id.toString()), {
+        manual: true,
+        onSuccess: () => {
+            toast.success('Exhibit deleted successfully.');
             refreshListFunction();
-        } catch (error) {
-            console.error("Error deleting exhibit:", error);
-        }
-    };
+        },
+        onError: (error: any) => {
+            toast.error(`Error deleting exhibit: ${error.message}`);
+        },
+    });
 
     return (
         <Card variant="outlined" sx={{mb: 2, pb: 2, pt:4, px:6, width: 1000, maxWidth: 800}}>

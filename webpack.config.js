@@ -1,11 +1,21 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import HtmlWebpackPlugin from "html-webpack-plugin";
+import webpack from 'webpack';
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default () => {
+
+    const envPath = path.resolve(__dirname, '.env');
+    const envVars = dotenv.config({ path: envPath }).parsed || {};
+
+    console.log(envPath);
+
     return {
         entry: './src/index.tsx',
         output: {
@@ -38,6 +48,9 @@ export default () => {
         plugins: [
             new HtmlWebpackPlugin({
                 template: './public/index.html',
+            }),
+            new webpack.DefinePlugin({
+                'process.env': JSON.stringify(envVars),
             }),
         ],
         devServer: {

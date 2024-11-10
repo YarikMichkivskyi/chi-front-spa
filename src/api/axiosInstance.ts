@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const url = process.env.API_URL;
+
 const axiosInstance = axios.create({
-    baseURL: 'http://ec2-13-49-67-34.eu-north-1.compute.amazonaws.com',
+    baseURL: url,
     timeout: 10000,
 });
 
@@ -17,6 +19,7 @@ axiosInstance.interceptors.response.use(
 );
 
 const setToken: (newToken: string) => void = (newToken: string) => {
+    console.log(url)
     axiosInstance.defaults.headers.common['Authorization'] = 'Bearer ' + newToken;
 }
 

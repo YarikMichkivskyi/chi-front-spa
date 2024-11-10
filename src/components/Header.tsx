@@ -1,25 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from '../hooks/hooks';
+import { useNavigate } from 'react-router-dom';
 import { userActions } from '../store/actions';
-import userApi from '../api/actions/user.api';
+import {useDispatch, useSelector} from "react-redux";
+import {AppDispatch, RootState} from "../common/types/types";
 
 const Header = () => {
     const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const token = useAppSelector(state => state.userData.token);
-    const [username, setUsername] = useState('');
+    const dispatch = useDispatch<AppDispatch>();
+    const username = useSelector((state:RootState) => state.userData.username);
 
-    useEffect(() => {
-        if (token) {
-            userApi.getUserByToken().then((res) => {
-                setUsername(res.data.username);
-            });
-        } else {
-            setUsername('');
-        }
-    }, [token]);
 
     const handleLogout = () => {
         dispatch(userActions.logout());
@@ -31,7 +21,7 @@ const Header = () => {
             <Toolbar>
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>Exhibit App</Typography>
 
-                {token ? (
+                {username!=='' ? (
                     <>
                         <Box display="flex" alignItems="center" ml={3}>
                             <Button

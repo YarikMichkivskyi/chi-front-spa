@@ -9,10 +9,11 @@ import HomePage from "./layouts/Home.page";
 import {Box, CssBaseline} from "@mui/material";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {useAppSelector} from "./hooks/hooks";
+import { RootState } from './common/types/types';
+import {useSelector} from "react-redux";
 
 export default function App() {
-    const userId = useAppSelector((state) => state.userData.id);
+    const userId = useSelector((state:RootState) => state.userData.id);
 
     return (
         <>

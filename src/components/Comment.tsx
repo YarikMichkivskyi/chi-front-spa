@@ -2,7 +2,9 @@ import React from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { CommentT } from '../common/types/types';
-import { deleteComment } from '../api/actions/comment.api'; // Припускаючи, що є API для видалення коментаря
+import { deleteComment } from '../api/actions/comment.api';
+import {toast} from "react-toastify";
+import {useRequest} from "ahooks";
 
 type CommentProps = {
     exhibitId: number;
@@ -12,14 +14,16 @@ type CommentProps = {
 };
 
 const Comment: React.FC<CommentProps> = ({exhibitId, comment, refreshListFunction, isOwner }) => {
-    const handleDelete = async () => {
-        try {
-            await deleteComment(exhibitId.toString(), comment.id);
+    const { run: handleDelete } = useRequest(() => deleteComment(exhibitId.toString(), comment.id), {
+        manual: true,
+        onSuccess: () => {
+            toast.success('Comment deleted successfully.');
             refreshListFunction();
-        } catch (error) {
-            console.error("Error deleting comment:", error);
-        }
-    };
+        },
+        onError: (error: any) => {
+            toast.error(`Error deleting comment: ${error.message}`);
+        },
+    });
 
     return (
         <Box sx={{ mb: 2, p: 2, border: '1px solid #e0e0e0', borderRadius: 1, position: 'relative' }}>
