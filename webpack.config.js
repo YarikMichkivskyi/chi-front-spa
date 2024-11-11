@@ -59,6 +59,11 @@ export default () => {
             hot: true,
             open: true,
             port: 4567,
+            allowedHosts: [
+                '.us-east-2.compute.amazonaws.com',
+                'ec2-52-15-38-0.us-east-2.compute.amazonaws.com',//to .env
+                'localhost',
+            ],
         },
     };
 }
