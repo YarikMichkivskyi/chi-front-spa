@@ -19,6 +19,9 @@ export const PostsList: React.FC<PostsListProps> = ({ exhibits, page, totalPages
 
     return (
         <>
+            <Box display="flex" justifyContent="center" mt={2} mb={4}>
+                <Pagination count={totalPages} page={Number(page)} onChange={(e, value) => setPage(value)} />
+            </Box>
             <Box>
                 {loading ? (
                     <p>Loading...</p>

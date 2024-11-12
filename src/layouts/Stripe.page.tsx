@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React from 'react';
 import {getAllExhibits} from "../api/actions/exhibit.api";
 import {Typography} from '@mui/material';
 import {PostsList} from "../components/PostsList";
@@ -7,48 +7,41 @@ import {AllExhibitResponse} from "../common/types/exhibit/allExhibitResponse.typ
 import {useRequest} from "ahooks";
 import {useSocket} from "../hooks/hooks";
 import {AxiosResponse} from "axios";
+import { useSearchParams } from 'react-router-dom';
+import {AllExhibit} from "../common/types/exhibit/allExhibit.type";
 
 const StripePage = () => {
 
-    const [data, setData] = React.useState<AllExhibitResponse>({
+    const [data, setData] = React.useState<{data:AllExhibit[], lastPage:number}>({
         data: [],
-        total: 0,
-        page: "1",
-        lastPage: 0
+        lastPage: 0,
     });
+    const [searchParams, setSearchParams] = useSearchParams();
+    const page = Number(searchParams.get("page"))||1;
 
-    const {loading, run} = useRequest(
-        () => getAllExhibits(Number(data.page), 10),
+    const {loading, run, } = useRequest(
+        () => getAllExhibits(page, 10),
         {
-            manual: true,
             onSuccess: (data: AxiosResponse<AllExhibitResponse>) => {
                 setData(data.data)
             },
+            refreshDeps:[page]
         }
     );
 
-    const fetchPosts = useCallback(() => {
-        run();
-    }, [run]);
+    const setPage = (page: number) => {
+        setSearchParams({ page: page.toString() });
+    };
 
-    useEffect(() => {
-        fetchPosts();
-    }, []);
-
-    const setPage = async (page: number) => {
-        const res = await getAllExhibits(Number(page), 10);
-        setData(res.data);
-    }
-
-    useSocket(fetchPosts);
+    useSocket(run);
 
     return (
         <PageFrame>
             <Typography variant="h4" gutterBottom>All Posts</Typography>
             <PostsList
-                page={data.page.toString()}
+                page={searchParams.get('page') || '1'}
                 loading={loading}
-                refreshList={fetchPosts}
+                refreshList={run}
                 totalPages={data.lastPage}
                 exhibits={data.data}
                 setPage={setPage}

@@ -1,51 +1,44 @@
-import React, {useCallback, useEffect} from 'react';
-import {getAllExhibits, getMyExhibits} from "../api/actions/exhibit.api";
+import React from 'react';
+import {getAllExhibits} from "../api/actions/exhibit.api";
 import {Typography} from '@mui/material';
 import {PostsList} from "../components/PostsList";
 import PageFrame from "../components/PageFrame";
-import {AllExhibitResponse} from "../common/types/exhibit/allExhibitResponse.type";
 import {useRequest} from "ahooks";
 import {AxiosResponse} from "axios";
+import {useSearchParams} from "react-router-dom";
+import {MyExhibit} from "../common/types/exhibit/myExhibit.type";
+import { MyExhibitResponse } from '../common/types/types';
 
 const HomePage = () => {
 
-    const [data, setData] = React.useState<AllExhibitResponse>({
+    const [data, setData] = React.useState<{data:MyExhibit[], lastPage:number}>({
         data: [],
-        total: 0,
-        page: "1",
-        lastPage: 0
+        lastPage: 0,
     });
+    const [searchParams, setSearchParams] = useSearchParams();
+    const page = Number(searchParams.get("page"))||1;
 
-    const {loading, run} = useRequest(
-        () => getMyExhibits(Number(data.page), 10),
+    const {loading, run, } = useRequest(
+        () => getAllExhibits(page, 10),
         {
-            manual: true,
-            onSuccess: (data: AxiosResponse<AllExhibitResponse>) => {
+            onSuccess: (data: AxiosResponse<MyExhibitResponse>) => {
                 setData(data.data)
             },
+            refreshDeps:[page]
         }
     );
 
-    const fetchPosts = useCallback(() => {
-        run();
-    }, [run]);
-
-    useEffect(() => {
-        fetchPosts();
-    }, []);
-
-    const setPage = async (page: number) => {
-        const res = await getMyExhibits(Number(page), 10);
-        setData(res.data);
-    }
+    const setPage = (page: number) => {
+        setSearchParams({ page: page.toString() });
+    };
 
     return (
         <PageFrame>
             <Typography variant="h4" gutterBottom>All Posts</Typography>
             <PostsList
-                page={data.page.toString()}
+                page={page.toString()}
                 loading={loading}
-                refreshList={fetchPosts}
+                refreshList={run}
                 totalPages={data.lastPage}
                 exhibits={data.data}
                 setPage={setPage}

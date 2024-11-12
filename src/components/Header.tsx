@@ -21,7 +21,7 @@ const Header = () => {
             <Toolbar>
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>Exhibit App</Typography>
 
-                {username!=='' ? (
+                {username!==null ? (
                     <>
                         <Box display="flex" alignItems="center" ml={3}>
                             <Button
