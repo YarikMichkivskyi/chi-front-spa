@@ -1,5 +1,5 @@
 import React from 'react';
-import {getAllExhibits} from "../api/actions/exhibit.api";
+import {getMyExhibits} from "../api/actions/exhibit.api";
 import {Typography} from '@mui/material';
 import {PostsList} from "../components/PostsList";
 import PageFrame from "../components/PageFrame";
@@ -19,7 +19,7 @@ const HomePage = () => {
     const page = Number(searchParams.get("page"))||1;
 
     const {loading, run, } = useRequest(
-        () => getAllExhibits(page, 10),
+        () => getMyExhibits(page, 10),
         {
             onSuccess: (data: AxiosResponse<MyExhibitResponse>) => {
                 setData(data.data)

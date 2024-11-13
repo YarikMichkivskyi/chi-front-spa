@@ -7,7 +7,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import StripePage from "./layouts/Stripe.page";
 import HomePage from "./layouts/Home.page";
 import {Box, CssBaseline} from "@mui/material";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { RootState } from './common/types/types';
 import {useSelector} from "react-redux";
